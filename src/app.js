@@ -6,14 +6,13 @@ const httpServer = require('http').createServer(app);
 const bodyParser = require('body-parser');
 
 // Aqui fazemos o parsing das requisições do cliente(browser)
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
 
 const io = require('socket.io')(httpServer, {
     cors: {
-        origin: `http://localhost:${PORT}`,
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        origin: 'http://localhost:8080',
     },
 });
 
@@ -28,10 +27,16 @@ const createNicknameRandom = (length) => {
 
 // const USERS = [];
 
-io.on('connection', () => {
+io.on('connection', (socket) => {
+    console.log(socket.id);
     const nickName = createNicknameRandom(16);
     // USERS.push(nickName);
-    io.emit('message', `${nickName} acabou de entrar`);
+    io.emit('serverMessage', `${nickName} acabou de entrar`);
+    socket.on('Hello', (message) => {
+        console.log(socket.id, message);
+    });
 });
+
+app.get('/', (req, res) => res.send('Hello World!!!'));
 
 module.exports = httpServer;
