@@ -16,24 +16,34 @@ const io = require('socket.io')(httpServer, {
     },
 });
 
-const createNicknameRandom = (length) => {
-    let newNickname = '';
-    const caracters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < length; i += 1) {
-        newNickname += caracters.charAt(Math.floor(Math.random() * caracters.length));
-    }
-    return newNickname;
-};
+const chatController = require('./database/controllers/chatController');
+const helper = require('./helpers');
 
-// const USERS = [];
+// const createNicknameRandom = (length) => {
+//     let newNickname = '';
+//     const caracters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+//     for (let i = 0; i < length; i += 1) {
+//         newNickname += caracters.charAt(Math.floor(Math.random() * caracters.length));
+//     }
+//     return newNickname;
+// };
+
+const USERS = [];
 
 io.on('connection', (socket) => {
-    console.log(socket.id);
-    const nickName = createNicknameRandom(16);
-    // USERS.push(nickName);
-    io.emit('serverMessage', `${nickName} acabou de entrar`);
-    socket.on('Hello', (message) => {
-        console.log(socket.id, message);
+    io.emit('allUsers', USERS);
+    socket.on('myNickname', (nickName) => {
+        USERS.push(nickName);
+        io.emit('allUsers', USERS);
+    });
+    socket.on('clientMessage', async (message) => {
+        console.log(message);
+        const date = helper.createDate();
+        const obj = {
+            ...message,
+            date,
+        };
+        await chatController.addNewMessage(obj);
     });
 });
 
