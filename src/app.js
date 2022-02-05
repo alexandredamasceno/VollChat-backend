@@ -8,8 +8,6 @@ const bodyParser = require('body-parser');
 // Aqui fazemos o parsing das requisições do cliente(browser)
 app.use(bodyParser.json());
 
-// const PORT = process.env.PORT || 3000;
-
 const io = require('socket.io')(httpServer, {
     cors: {
         origin: 'http://localhost:8080',
@@ -17,15 +15,6 @@ const io = require('socket.io')(httpServer, {
 });
 
 const chatController = require('./database/controllers/chatController');
-
-// const createNicknameRandom = (length) => {
-//     let newNickname = '';
-//     const caracters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-//     for (let i = 0; i < length; i += 1) {
-//         newNickname += caracters.charAt(Math.floor(Math.random() * caracters.length));
-//     }
-//     return newNickname;
-// };
 
 const USERS = [];
 
