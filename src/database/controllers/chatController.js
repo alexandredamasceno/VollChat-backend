@@ -7,13 +7,20 @@ const addNewMessage = async ({
     }) => chatModel
     .addChatMessage(nick, message, date);
 
-const getMessages = async () => {
-    const messages = await chatModel.getAllMessages();
+const thirtyMessages = async () => {
+    const messages = await chatModel.getThirtyMessages();
 
     return messages;
 };
 
+const allMessages = async () => {
+    const result = await chatModel.getMessages();
+
+    return result;
+};
+
 module.exports = {
     addNewMessage,
-    getMessages,
+    thirtyMessages,
+    allMessages,
 };

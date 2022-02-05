@@ -17,7 +17,6 @@ const io = require('socket.io')(httpServer, {
 });
 
 const chatController = require('./database/controllers/chatController');
-const helper = require('./helpers');
 
 // const createNicknameRandom = (length) => {
 //     let newNickname = '';
@@ -30,23 +29,25 @@ const helper = require('./helpers');
 
 const USERS = [];
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
+    const messages = await chatController.thirtyMessages();
     io.emit('allUsers', USERS);
+    io.emit('allMessages', messages);
     socket.on('myNickname', (nickName) => {
         USERS.push(nickName);
         io.emit('allUsers', USERS);
     });
     socket.on('clientMessage', async (message) => {
-        console.log(message);
-        const date = helper.createDate();
-        const obj = {
-            ...message,
-            date,
-        };
-        await chatController.addNewMessage(obj);
+        await chatController.addNewMessage(message);
+        // const data = await chatController.allMessages();
+        io.emit('newMessage', message);
     });
 });
 
-app.get('/', (req, res) => res.send('Hello World!!!'));
+app.get('/', async (req, res) => {
+    const messages = await chatController.getMessages();
+    
+    return res.status(200).json(messages);
+});
 
 module.exports = httpServer;
