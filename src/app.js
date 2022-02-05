@@ -39,15 +39,8 @@ io.on('connection', async (socket) => {
     });
     socket.on('clientMessage', async (message) => {
         await chatController.addNewMessage(message);
-        // const data = await chatController.allMessages();
         io.emit('newMessage', message);
     });
-});
-
-app.get('/', async (req, res) => {
-    const messages = await chatController.getMessages();
-    
-    return res.status(200).json(messages);
 });
 
 module.exports = httpServer;

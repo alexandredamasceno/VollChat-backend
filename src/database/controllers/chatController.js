@@ -13,14 +13,7 @@ const thirtyMessages = async () => {
     return messages;
 };
 
-const allMessages = async () => {
-    const result = await chatModel.getMessages();
-
-    return result;
-};
-
 module.exports = {
     addNewMessage,
     thirtyMessages,
-    allMessages,
 };
